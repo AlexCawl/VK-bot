@@ -15,28 +15,46 @@ def question_1(event):
 
 
 def question_2(event):
-    base[event.user_id][4].append(event.text)
-    message = f'{event.text} или ПЛЕЙСТЕЙШОН ФААЙФ?'
+    try:
+        base[event.user_id][4].append(event.text)
+        message = f'{event.text} или ПЛЕЙСТЕЙШОН ФААЙФ?'
+        keyboard_2 = VkKeyboard(one_time=True)
+        keyboard_2.add_button(f'{event.text}', color=VkKeyboardColor.POSITIVE)
+        keyboard_2.add_button('ПЛЕЙСТЕЙШОН ФААЙФ', color=VkKeyboardColor.NEGATIVE)
+        vk_session.method('messages.send', {'user_id': event.user_id, 'message': message, 'random_id': 0,
+                                            'keyboard': keyboard_2.get_keyboard()})
+    except:
+        base[event.user_id][4].append('Sticker')
+        message = f'Sticker или ПЛЕЙСТЕЙШОН ФААЙФ?'
+        keyboard_2 = VkKeyboard(one_time=True)
+        keyboard_2.add_button(f'Sticker', color=VkKeyboardColor.POSITIVE)
+        keyboard_2.add_button('ПЛЕЙСТЕЙШОН ФААЙФ', color=VkKeyboardColor.NEGATIVE)
+        vk_session.method('messages.send', {'user_id': event.user_id, 'message': message, 'random_id': 0,
+                                            'keyboard': keyboard_2.get_keyboard()})
 
-    keyboard_2 = VkKeyboard(one_time=True)
-    keyboard_2.add_button(f'{event.text}', color=VkKeyboardColor.POSITIVE)
-    keyboard_2.add_button('ПЛЕЙСТЕЙШОН ФААЙФ', color=VkKeyboardColor.NEGATIVE)
-
-    vk_session.method('messages.send', {'user_id': event.user_id, 'message': message, 'random_id': 0,
-                                        'keyboard': keyboard_2.get_keyboard()})
     base[event.user_id][0] += 1
 
 
 def question_3(event):
-    base[event.user_id][4].append(event.text)
-    message = f'{event.text} или ЛОДЖИТЕК?'
+    try:
+        base[event.user_id][4].append(event.text)
+        message = f'{event.text} или ЛОДЖИТЕК?'
 
-    keyboard_3 = VkKeyboard(one_time=True)
-    keyboard_3.add_button(f'{event.text}', color=VkKeyboardColor.PRIMARY)
-    keyboard_3.add_button('ЛОДЖИТЕК', color=VkKeyboardColor.POSITIVE)
+        keyboard_3 = VkKeyboard(one_time=True)
+        keyboard_3.add_button(f'{event.text}', color=VkKeyboardColor.PRIMARY)
+        keyboard_3.add_button('ЛОДЖИТЕК', color=VkKeyboardColor.POSITIVE)
+        vk_session.method('messages.send', {'user_id': event.user_id, 'message': message, 'random_id': 0,
+                                            'keyboard': keyboard_3.get_keyboard()})
+    except:
+        base[event.user_id][4].append('Sticker')
+        message = f'Sticker или ЛОДЖИТЕК?'
 
-    vk_session.method('messages.send', {'user_id': event.user_id, 'message': message, 'random_id': 0,
-                                        'keyboard': keyboard_3.get_keyboard()})
+        keyboard_3 = VkKeyboard(one_time=True)
+        keyboard_3.add_button(f'Sticker', color=VkKeyboardColor.PRIMARY)
+        keyboard_3.add_button('ЛОДЖИТЕК', color=VkKeyboardColor.POSITIVE)
+        vk_session.method('messages.send', {'user_id': event.user_id, 'message': message, 'random_id': 0,
+                                            'keyboard': keyboard_3.get_keyboard()})
+
     base[event.user_id][0] += 1
 
 
@@ -114,8 +132,9 @@ def question_end(event):
 
     answers = ''
     for i in range(len(base[event.user_id][4])):
-        answers += f'{i}) {base[event.user_id][4][i]}\n'
+        answers += f'{i + 1}) {base[event.user_id][4][i]}\n'
 
     message = f'Закончили опрос. Твои ответы:\n{answers}'
     vk_session.method('messages.send', {'user_id': event.user_id, 'message': message, 'random_id': 0, })
     base[event.user_id][0] = 0
+    base[event.user_id][4].clear()
